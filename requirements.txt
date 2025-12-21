@@ -1,7 +1,10 @@
 Flask==2.3.3
-numpy==1.24.3
-opencv-python==4.8.1.78
-Pillow==10.0.1
-reportlab==4.0.7
-speech-recognition==3.10.0
-h5py==3.9.0
+numpy==1.26.3
+opencv-python==4.9.0.80
+Pillow==10.2.0
+reportlab==4.1.0
+SpeechRecognition==3.10.1
+h5py==3.10.0
+setuptools==69.0.3
+wheel==0.42.0
+gunicorn==21.2.0
