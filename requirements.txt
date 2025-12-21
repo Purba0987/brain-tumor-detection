@@ -5,6 +5,5 @@ Pillow==11.0.0
 reportlab==4.1.0
 SpeechRecognition==3.10.1
 h5py==3.10.0
-setuptools==69.0.3
-wheel==0.42.0
 gunicorn==21.2.0
+tensorflow==2.13.0
