@@ -1,0 +1,22 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environment
+venv/
+
+# Uploaded MRI images (user data)
+uploads/
+
+# Trained model files (large size)
+*.h5
+
+# Zip files
+*.zip
+
+# VS Code settings
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
