@@ -63,3 +63,6 @@ TumorAI is an AI-powered brain tumor detection system. It allows users to upload
 - **Visualization** – Training history, confusion matrix, ROC curves.
 - **Prediction Interface** – Displays uploaded MRI image with predicted tumor type and confidence.
 
+
+
+Watch demo video : https://youtu.be/0bDApW3KF_I?si=_8wWmLj-e4X8aGAW
