@@ -8,7 +8,7 @@
 (function() {
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '0.0.0.0';
     const RENDER_BACKEND_URL = "https://brain-tumor-backend-slqf.onrender.com";
-    if (!isLocal && window.location.origin !== RENDER_BACKEND_URL && !window.location.origin.includes("onrender.com") && !window.location.origin.includes("vercel.app")) {
+    if (!isLocal && window.location.origin !== RENDER_BACKEND_URL && !window.location.origin.includes("onrender.com")) {
         const originalFetch = window.fetch;
         window.fetch = function(input, init) {
             if (typeof input === 'string' && input.startsWith('/') && !input.startsWith('//')) {
