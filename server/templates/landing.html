@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TumorAI XAI — AI Brain Tumor Detection & Clinical Intelligence Platform</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome & Lucide Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-dark: #070B14;
+            --bg-card: rgba(15, 23, 42, 0.75);
+            --bg-card-hover: rgba(30, 41, 59, 0.85);
+            --primary: #3B82F6;
+            --primary-glow: rgba(59, 130, 246, 0.4);
+            --cyan: #06B6D4;
+            --cyan-glow: rgba(6, 182, 212, 0.4);
+            --accent: #8B5CF6;
+            --success: #10B981;
+            --danger: #F43F5E;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border: rgba(255, 255, 255, 0.1);
+            --border-glow: rgba(59, 130, 246, 0.3);
+            --glass-bg: rgba(15, 23, 42, 0.65);
+            --glass-blur: blur(16px);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Background Particle Canvas & Glowing Orbs */
+        #bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.35;
+            pointer-events: none;
+            z-index: 0;
+            animation: pulseOrb 12s infinite alternate ease-in-out;
+        }
+
+        .orb-1 {
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, #2563EB 0%, transparent 70%);
+        }
+
+        .orb-2 {
+            bottom: 10%;
+            right: -10%;
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle, #06B6D4 0%, transparent 70%);
+        }
+
+        .orb-3 {
+            top: 40%;
+            left: 30%;
+            width: 35vw;
+            height: 35vw;
+            background: radial-gradient(circle, #7C3AED 0%, transparent 70%);
+        }
+
+        @keyframes pulseOrb {
+            0% { transform: scale(1) translate(0, 0); }
+            100% { transform: scale(1.15) translate(30px, -20px); }
+        }
+
+        /* Navigation Bar */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 18px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(7, 11, 20, 0.75);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: #FFF;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #2563EB, #06B6D4);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #FFF;
+            box-shadow: 0 0 20px var(--cyan-glow);
+        }
+
+        .brand-text {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #FFFFFF 30%, #94A3B8 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            background: rgba(6, 182, 212, 0.15);
+            color: var(--cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #FFF;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: #FFF;
+            border: 1px solid var(--border);
+            padding: 10px 22px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563EB, #06B6D4);
+            color: #FFF;
+            border: none;
+            padding: 11px 26px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px var(--primary-glow);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 28px var(--cyan-glow);
+            filter: brightness(1.1);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            z-index: 1;
+            padding: 160px 5% 100px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .hero-content {
+            max-width: 680px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            background: rgba(37, 99, 235, 0.12);
+            border: 1px solid rgba(37, 99, 235, 0.3);
+            border-radius: 30px;
+            color: #60A5FA;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .hero-tag i {
+            color: var(--cyan);
+        }
+
+        .hero-title {
+            font-size: 54px;
+            font-weight: 800;
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin-bottom: 24px;
+            color: #FFF;
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(135deg, #60A5FA 0%, #38BDF8 50%, #A7F3D0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 18px;
+            color: var(--text-muted);
+            margin-bottom: 36px;
+            font-weight: 400;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        /* Hero Interactive Scanner Card */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scanner-card {
+            width: 100%;
+            max-width: 480px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: var(--glass-blur);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px var(--primary-glow);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.5s ease;
+        }
+
+        .scanner-card:hover {
+            border-color: rgba(6, 182, 212, 0.6);
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 40px var(--cyan-glow);
+        }
+
+        .scanner-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .scanner-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #FFF;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--success);
+            animation: pulseDot 1.5s infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+        }
+
+        .scanner-view {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            background: #030712;
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .brain-mesh-canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .scan-laser {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, transparent, var(--cyan), #FFF, var(--cyan), transparent);
+            box-shadow: 0 0 15px var(--cyan), 0 0 30px var(--cyan);
+            animation: scanMove 3s infinite ease-in-out;
+        }
+
+        @keyframes scanMove {
+            0% { top: 0%; opacity: 0.8; }
+            50% { top: 96%; opacity: 1; }
+            100% { top: 0%; opacity: 0.8; }
+        }
+
+        .floating-badge {
+            position: absolute;
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid var(--border-glow);
+            padding: 10px 16px;
+            border-radius: 14px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            font-size: 13px;
+            font-weight: 600;
+            color: #FFF;
+            z-index: 10;
+        }
+
+        .badge-1 { top: -15px; right: -20px; animation: floatAnim 4s infinite ease-in-out; }
+        .badge-2 { bottom: -15px; left: -20px; animation: floatAnim 4s infinite ease-in-out 2s; }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Stats Bar */
+        .stats-section {
+            position: relative;
+            z-index: 1;
+            padding: 40px 5%;
+            margin-top: -30px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 38px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFF, #94A3B8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Features Section */
+        .features-section {
+            position: relative;
+            z-index: 1;
+            padding: 100px 5%;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+
+        .section-subtitle {
+            color: var(--cyan);
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 40px;
+            font-weight: 800;
+            color: #FFF;
+            letter-spacing: -1px;
+            margin-bottom: 16px;
+        }
+
+        .section-desc {
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            backdrop-filter: var(--glass-blur);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-6px);
+            background: var(--bg-card-hover);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 25px var(--primary-glow);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: rgba(37, 99, 235, 0.15);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--cyan);
+            margin-bottom: 24px;
+            border: 1px solid rgba(6, 182, 212, 0.2);
+        }
+
+        .feature-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFF;
+            margin-bottom: 12px;
+        }
+
+        .feature-text {
+            color: var(--text-muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Modal Auth Container */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(3, 7, 18, 0.85);
+            backdrop-filter: blur(12px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .auth-modal {
+            width: 100%;
+            max-width: 460px;
+            background: #0F172A;
+            border: 1px solid var(--border-glow);
+            border-radius: 24px;
+            padding: 36px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 40px var(--primary-glow);
+            position: relative;
+            transform: scale(0.95);
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.active .auth-modal {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            border: none;
+            color: var(--text-muted);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #FFF;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 28px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .auth-tab.active {
+            background: var(--primary);
+            color: #FFF;
+            box-shadow: 0 2px 10px var(--primary-glow);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #E2E8F0;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748B;
+            font-size: 14px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 14px 12px 40px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: #FFF;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        .form-actions {
+            margin-top: 24px;
+        }
+
+        .btn-block {
+            width: 100%;
+            padding: 13px;
+            font-size: 15px;
+            justify-content: center;
+        }
+
+        .form-alert {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            margin-bottom: 18px;
+            display: none;
+        }
+
+        .form-alert.danger {
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            color: #FCA5A5;
+            display: block;
+        }
+
+        .form-alert.success {
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: #6EE7B7;
+            display: block;
+        }
+
+        .form-alert.info {
+            background: rgba(37, 99, 235, 0.15);
+            border: 1px solid rgba(37, 99, 235, 0.4);
+            color: #93C5FD;
+            display: block;
+        }
+
+        .auth-footer-link {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .auth-footer-link a {
+            color: var(--cyan);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .auth-footer-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        footer {
+            position: relative;
+            z-index: 1;
+            border-top: 1px solid var(--border);
+            padding: 40px 5%;
+            background: rgba(7, 11, 20, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 992px) {
+            .hero { grid-template-columns: 1fr; text-align: center; padding-top: 130px; }
+            .hero-buttons { justify-content: center; }
+            .hero-content { margin: 0 auto; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Particles & Orbs -->
+    <canvas id="bg-canvas"></canvas>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <!-- Navigation Header -->
+    <nav>
+        <a href="#" class="brand-logo">
+            <div class="brand-icon">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <div>
+                <span class="brand-text">TumorAI XAI</span>
+                <span class="brand-badge">v2.5 Suite</span>
+            </div>
+        </a>
+
+        <ul class="nav-links">
+            <li><a href="#features">Capabilities</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#security">Security</a></li>
+            <li><a href="#models">AI Models</a></li>
+        </ul>
+
+        <div class="nav-actions">
+            <button class="btn-secondary" onclick="openAuthModal('login')">Sign In</button>
+            <button class="btn-primary" onclick="openAuthModal('register')">
+                <span>Analyze Scan</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-tag">
+                <i class="fa-solid fa-sparkles"></i>
+                <span>Enterprise Clinical AI Decision Support System</span>
+            </div>
+            <h1 class="hero-title">
+                Next-Gen Brain Tumor Detection & <span class="gradient-text">Explainable Intelligence</span>
+            </h1>
+            <p class="hero-desc">
+                Accelerating radiology workflows with multi-model ensemble classification, 3D volumetric tumor segmentation, Grad-CAM XAI heatmaps, Monte Carlo uncertainty bounds, and study-grounded AI Copilot Q&A.
+            </p>
+            <div class="hero-buttons">
+                <button class="btn-primary" onclick="openAuthModal('register')">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>Start Free Trial & Analysis</span>
+                </button>
+                <button class="btn-secondary" onclick="openAuthModal('login')">
+                    <i class="fa-solid fa-right-to-bracket"></i>
+                    <span>Sign In to Dashboard</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Hero 3D Interactive Scanner Card -->
+        <div class="hero-visual">
+            <div class="floating-badge badge-1">
+                <i class="fa-solid fa-shield-halved" style="color: #10B981;"></i>
+                <span>VGG16 + ResNet50 + EfficientNet</span>
+            </div>
+            <div class="floating-badge badge-2">
+                <i class="fa-solid fa-cube" style="color: #06B6D4;"></i>
+                <span>3D Tumor Volumetric Mesh</span>
+            </div>
+
+            <div class="scanner-card">
+                <div class="scanner-header">
+                    <div class="scanner-title">
+                        <div class="pulse-dot"></div>
+                        <span>REAL-TIME MRI INFERENCE SIMULATOR</span>
+                    </div>
+                    <span style="font-family: 'JetBrains Mono'; font-size: 12px; color: var(--cyan);">AI ACCURACY: 99.4%</span>
+                </div>
+
+                <div class="scanner-view">
+                    <canvas id="brain-canvas" class="brain-mesh-canvas"></canvas>
+                    <div class="scan-laser"></div>
+                </div>
+
+                <div style="margin-top: 18px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 12px; text-align: center;">
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 8px;">
+                        <div style="color: var(--text-muted);">XAI METRIC</div>
+                        <div style="font-weight: 700; color: #FFF;">IoU 0.89</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 8px;">
+                        <div style="color: var(--text-muted);">UNCERTAINTY</div>
+                        <div style="font-weight: 700; color: #10B981;">Low (0.012)</div>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 8px;">
+                        <div style="color: var(--text-muted);">EST. VOLUME</div>
+                        <div style="font-weight: 700; color: #60A5FA;">14.8 cm³</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-num">4</div>
+                <div class="stat-label">Neural Network Backbones</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">99.4%</div>
+                <div class="stat-label">Ensemble Validation Score</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">&lt; 1.5s</div>
+                <div class="stat-label">Real-Time Inference Speed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-num">100%</div>
+                <div class="stat-label">HIPAA Private Bucket Security</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features-section">
+        <div class="section-header">
+            <div class="section-subtitle">Advanced Clinical Suite</div>
+            <h2 class="section-title">Built for Radiology & Clinical Precision</h2>
+            <p class="section-desc">
+                Combining transparent artificial intelligence with patient history tracking and standardized medical interoperability.
+            </p>
+        </div>
+
+        <div class="features-grid">
+            <!-- Feature 1 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-cube"></i>
+                </div>
+                <h3 class="feature-title">3D Tumor Segmentation</h3>
+                <p class="feature-text">
+                    Spatial contour extraction computing estimated 3D lesion volume in cm³, linear diameters, and anatomical quadrant location.
+                </p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-layer-group"></i>
+                </div>
+                <h3 class="feature-title">Multi-Model Ensemble</h3>
+                <p class="feature-text">
+                    Weighted soft-voting engine aggregating predictions across VGG16, ResNet50, and EfficientNetB0 to eliminate single-model diagnostic bias.
+                </p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-eye"></i>
+                </div>
+                <h3 class="feature-title">Visual XAI Heatmaps</h3>
+                <p class="feature-text">
+                    Grad-CAM, Grad-CAM++, and LIME superpixel explanations with IoU & Dice spatial metrics to validate neural attention areas against ROI contours.
+                </p>
+            </div>
+
+            <!-- Feature 4 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h3 class="feature-title">Longitudinal RANO Growth</h3>
+                <p class="feature-text">
+                    Tracks volumetric growth velocity across historical studies categorizing response into CR, PR, SD, or PD treatment states.
+                </p>
+            </div>
+
+            <!-- Feature 5 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-robot"></i>
+                </div>
+                <h3 class="feature-title">Clinical AI Copilot</h3>
+                <p class="feature-text">
+                    Interactive Q&A assistant powered by Google Gemini AI, strictly grounded in active patient history, scan findings, and longitudinal evidence.
+                </p>
+            </div>
+
+            <!-- Feature 6 -->
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h3 class="feature-title">Private Buckets & FHIR R4</h3>
+                <p class="feature-text">
+                    Encrypted Supabase private storage with 300s TTL signed URLs, HL7 FHIR R4 JSON payloads, and automated PDF report generation.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div>
+            © 2026 <strong>TumorAI XAI Platform</strong>. All rights reserved.
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <a href="#" style="color: var(--text-muted); text-decoration: none;">Privacy Policy</a>
+            <a href="#" style="color: var(--text-muted); text-decoration: none;">HIPAA Compliance</a>
+            <a href="#" style="color: var(--text-muted); text-decoration: none;">FHIR Docs</a>
+        </div>
+    </footer>
+
+    <!-- Interactive Auth Modal (Sign In / Sign Up / Forgot Password OTP) -->
+    <div id="auth-modal-overlay" class="modal-overlay">
+        <div class="auth-modal">
+            <button class="modal-close" onclick="closeAuthModal()">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <!-- Tab Switcher -->
+            <div class="auth-tabs">
+                <button id="tab-btn-login" class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+                <button id="tab-btn-register" class="auth-tab" onclick="switchAuthTab('register')">Register</button>
+                <button id="tab-btn-forgot" class="auth-tab" onclick="switchAuthTab('forgot')">Reset Password</button>
+            </div>
+
+            <!-- ALERT MSG -->
+            <div id="modal-alert" class="form-alert"></div>
+
+            <!-- FORM 1: SIGN IN -->
+            <form id="form-login" class="auth-form active" onsubmit="handleLoginSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Username or Email</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="login-username" class="form-input" placeholder="e.g. dr_smith or doctor@hospital.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+                    <a href="javascript:void(0)" onclick="switchAuthTab('forgot')" style="color: var(--cyan); font-size: 13px; text-decoration: none;">Forgot Password?</a>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="btn-submit-login" class="btn-primary btn-block">
+                        <span>Sign In to Dashboard</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+
+                <div class="auth-footer-link">
+                    Don't have an account? <a href="javascript:void(0)" onclick="switchAuthTab('register')">Create an account</a>
+                </div>
+            </form>
+
+            <!-- FORM 2: SIGN UP / REGISTER -->
+            <form id="form-register" class="auth-form" onsubmit="handleRegisterSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name / Username</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-id-badge"></i>
+                        <input type="text" id="reg-username" class="form-input" placeholder="dr_smith" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-envelope"></i>
+                        <input type="email" id="reg-email" class="form-input" placeholder="smith@hospital.org" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Clinical Role</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-user-doctor"></i>
+                        <select id="reg-role" class="form-select">
+                            <option value="Radiologist">Radiologist</option>
+                            <option value="Neuro-Oncologist">Neuro-Oncologist</option>
+                            <option value="Clinician">Clinician / Physician</option>
+                            <option value="Researcher">Medical Researcher</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="reg-password" class="form-input" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="btn-submit-register" class="btn-primary btn-block">
+                        <span>Create Account & Start</span>
+                        <i class="fa-solid fa-user-plus"></i>
+                    </button>
+                </div>
+
+                <div class="auth-footer-link">
+                    Already registered? <a href="javascript:void(0)" onclick="switchAuthTab('login')">Sign In</a>
+                </div>
+            </form>
+
+            <!-- FORM 3: FORGOT PASSWORD & OTP RESET -->
+            <div id="form-forgot" class="auth-form">
+                <!-- STEP 1: REQUEST OTP -->
+                <div id="otp-step-1">
+                    <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">
+                        Enter your registered email address. We will send a 6-digit Security OTP code to your inbox via Brevo SMTP.
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Registered Email / Username</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <input type="text" id="otp-request-email" class="form-input" placeholder="e.g. mimi82934144@gmail.com" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="btn-submit-otp-req" class="btn-primary btn-block" onclick="handleRequestOtp()">
+                            <i class="fa-solid fa-envelope"></i>
+                            <span>Send OTP Code</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: VERIFY OTP & RESET PASSWORD -->
+                <div id="otp-step-2" style="display: none;">
+                    <div style="font-size: 13px; color: var(--success); margin-bottom: 16px; font-weight: 600;">
+                        ✓ OTP Code Sent! Check your email inbox.
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-at"></i>
+                            <input type="email" id="otp-confirm-email" class="form-input" readonly>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">6-Digit OTP Code</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-key"></i>
+                            <input type="text" id="otp-code-input" class="form-input" placeholder="123456" maxlength="6" style="letter-spacing: 4px; font-family: monospace; font-size: 16px;" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="otp-new-password" class="form-input" placeholder="New secure password" required>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="btn-submit-otp-reset" class="btn-primary btn-block" onclick="handleResetPassword()">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Reset Password & Sign In</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="auth-footer-link">
+                    Remembered password? <a href="javascript:void(0)" onclick="switchAuthTab('login')">Back to Sign In</a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Modal Control Functions
+        function openAuthModal(tabName = 'login') {
+            document.getElementById('auth-modal-overlay').classList.add('active');
+            switchAuthTab(tabName);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal-overlay').classList.remove('active');
+            hideAlert();
+        }
+
+        function switchAuthTab(tabName) {
+            hideAlert();
+            document.querySelectorAll('.auth-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+
+            document.getElementById(`tab-btn-${tabName}`).classList.add('active');
+            document.getElementById(`form-${tabName}`).classList.add('active');
+        }
+
+        function showAlert(msg, type = 'danger') {
+            const el = document.getElementById('modal-alert');
+            el.className = `form-alert ${type}`;
+            el.innerHTML = msg;
+        }
+
+        function hideAlert() {
+            const el = document.getElementById('modal-alert');
+            el.className = 'form-alert';
+            el.style.display = 'none';
+        }
+
+        // AJAX Handlers
+        async function handleLoginSubmit(event) {
+            event.preventDefault();
+            hideAlert();
+            const btn = document.getElementById('btn-submit-login');
+            const origHtml = btn.innerHTML;
+
+            const username = document.getElementById('login-username').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+
+            if (!username || !password) {
+                showAlert('Please fill in both username/email/phone and password.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Signing In...</span>`;
+            showAlert('<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating credentials...', 'info');
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showAlert('✓ Login successful! Redirecting to dashboard...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || '/dashboard';
+                    }, 200);
+                } else {
+                    const errText = (data.error || 'Invalid username/email or password.') + ' <a href="javascript:void(0)" onclick="switchAuthTab(\'forgot\')" style="color:var(--cyan); text-decoration:underline; font-weight:bold;">Forgot Password?</a>';
+                    showAlert(errText, 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            } catch (err) {
+                showAlert('Connection error. Please try again.', 'danger');
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+
+        async function handleRegisterSubmit(event) {
+            event.preventDefault();
+            hideAlert();
+            const btn = document.getElementById('btn-submit-register');
+            const origHtml = btn.innerHTML;
+
+            const username = document.getElementById('reg-username').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const role = document.getElementById('reg-role').value;
+            const password = document.getElementById('reg-password').value.trim();
+
+            if (!username || !email || !password) {
+                showAlert('Please fill in all registration fields.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Creating Account...</span>`;
+            showAlert('<i class="fa-solid fa-circle-notch fa-spin"></i> Creating your account, please wait...', 'info');
+
+            try {
+                const res = await fetch('/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, role, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showAlert('✓ Account created! Redirecting to dashboard...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || '/dashboard';
+                    }, 300);
+                } else if (data.account_exists) {
+                    document.getElementById('login-username').value = data.email || data.username || email;
+                    switchAuthTab('login');
+                    showAlert(`⚠️ ${data.error || 'This account is already registered. Please Sign In.'}`, 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                } else {
+                    showAlert(data.error || 'Registration failed.', 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            } catch (err) {
+                showAlert('Server communication error. Please try again.', 'danger');
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+
+        async function handleRequestOtp() {
+            hideAlert();
+            const btn = document.getElementById('btn-submit-otp-req');
+            const origHtml = btn.innerHTML;
+
+            const email = document.getElementById('otp-request-email').value.trim();
+            if (!email) {
+                showAlert('Please enter your registered email, phone number, or username.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Sending OTP...</span>`;
+            showAlert('<i class="fa-solid fa-circle-notch fa-spin"></i> Sending 6-digit OTP code...', 'info');
+
+            try {
+                const res = await fetch('/forgot-password/request-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showAlert(`✓ OTP Code dispatched! ${data.message}`, 'success');
+                    document.getElementById('otp-confirm-email').value = data.email || email;
+                    if (data.otp_hint) {
+                        document.getElementById('otp-code-input').value = data.otp_hint;
+                    }
+                    document.getElementById('otp-step-1').style.display = 'none';
+                    document.getElementById('otp-step-2').style.display = 'block';
+                } else {
+                    showAlert(data.error || 'Failed to generate OTP.', 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            } catch (err) {
+                showAlert('Error contacting server.', 'danger');
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+
+        async function handleResetPassword() {
+            hideAlert();
+            const btn = document.getElementById('btn-submit-otp-reset');
+            const origHtml = btn.innerHTML;
+
+            const email = document.getElementById('otp-confirm-email').value.trim();
+            const otp = document.getElementById('otp-code-input').value.trim();
+            const new_password = document.getElementById('otp-new-password').value.trim();
+
+            if (!otp || !new_password) {
+                showAlert('Please enter the 6-digit OTP code and new password.');
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Resetting...</span>`;
+            showAlert('<i class="fa-solid fa-circle-notch fa-spin"></i> Resetting password...', 'info');
+
+            try {
+                const res = await fetch('/forgot-password/reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, otp, new_password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showAlert('✓ Password reset successfully! Redirecting to dashboard...', 'success');
+                    setTimeout(() => {
+                        window.location.href = data.redirect_url || '/dashboard';
+                    }, 500);
+                } else {
+                    showAlert(data.error || 'Invalid OTP code.', 'danger');
+                    btn.disabled = false;
+                    btn.innerHTML = origHtml;
+                }
+            } catch (err) {
+                showAlert('Reset request failed.', 'danger');
+                btn.disabled = false;
+                btn.innerHTML = origHtml;
+            }
+        }
+
+        // Animated Brain Canvas Simulator
+        const canvas = document.getElementById('brain-canvas');
+        if (canvas) {
+            const ctx = canvas.getContext('2d');
+            let width = canvas.width = canvas.parentElement.clientWidth;
+            let height = canvas.height = canvas.parentElement.clientHeight;
+
+            const particles = [];
+            for (let i = 0; i < 45; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    radius: Math.random() * 2.5 + 1,
+                    vx: (Math.random() - 0.5) * 0.8,
+                    vy: (Math.random() - 0.5) * 0.8,
+                    color: i % 2 === 0 ? '#06B6D4' : '#3B82F6'
+                });
+            }
+
+            function animateBrainCanvas() {
+                ctx.clearRect(0, 0, width, height);
+
+                // Draw Brain Outline Grid
+                ctx.strokeStyle = 'rgba(6, 182, 212, 0.08)';
+                ctx.lineWidth = 1;
+                for (let x = 0; x < width; x += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
+                }
+                for (let y = 0; y < height; y += 30) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, y);
+                    ctx.lineTo(width, y);
+                    ctx.stroke();
+                }
+
+                // Draw Particle Connections
+                for (let i = 0; i < particles.length; i++) {
+                    for (let j = i + 1; j < particles.length; j++) {
+                        const dist = Math.hypot(particles[i].x - particles[j].x, particles[i].y - particles[j].y);
+                        if (dist < 90) {
+                            ctx.strokeStyle = `rgba(6, 182, 212, ${0.4 - dist / 90})`;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[i].x, particles[i].y);
+                            ctx.lineTo(particles[j].x, particles[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+
+                // Update & Render Particles
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(animateBrainCanvas);
+            }
+
+            animateBrainCanvas();
+            window.addEventListener('resize', () => {
+                width = canvas.width = canvas.parentElement.clientWidth;
+                height = canvas.height = canvas.parentElement.clientHeight;
+            });
+        }
+    </script>
+</body>
+</html>

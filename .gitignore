@@ -20,9 +20,14 @@ uploads/
 static/uploads/
 static/annotated/
 static/heatmaps/
+server/static/uploads/
+server/static/annotated/
+server/static/heatmaps/
 
-# Large Model Weights (Upload to cloud storage or track via Git LFS if needed)
+# Large Model Weights (Ignored to comply with GitHub 100MB file limit)
+*.h5
 models/*.h5
+server/models/*.h5
 
 # Zip files & Binaries
 *.zip

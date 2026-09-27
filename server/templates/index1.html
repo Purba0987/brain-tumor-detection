@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TumorAI – AI Brain Tumor Detection</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --c1:#22d3ee;
+    --c2:#a855f7;
+    --c3:#f97316;
+    --c4:#10b981;
+    --dark:#0f172a;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif}
+body{
+    background:linear-gradient(120deg,#ecfeff,#fdf4ff,#fff7ed);
+    overflow-x:hidden;
+    color:var(--dark);
+}
+
+/* Animated gradient blobs */
+.blob{
+    position:fixed;
+    width:400px;
+    height:400px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.35;
+    animation:blobMove 20s infinite alternate;
+    z-index:-1;
+}
+.blob.one{background:var(--c1);top:-150px;left:-150px}
+.blob.two{background:var(--c2);top:40%;right:-150px}
+.blob.three{background:var(--c3);bottom:-150px;left:30%}
+
+@keyframes blobMove{
+    from{transform:translate(0,0)}
+    to{transform:translate(80px,-60px)}
+}
+
+/* Navbar */
+header{
+    padding:20px 8%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    backdrop-filter:blur(12px);
+    background:rgba(255,255,255,.6);
+    border-bottom:1px solid rgba(255,255,255,.4);
+}
+.logo{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:600}
+.logo span{
+    background:linear-gradient(90deg,var(--c1),var(--c2));
+    padding:8px 10px;
+    color:#fff;
+    border-radius:12px;
+}
+nav a{text-decoration:none;margin:0 15px;color:#334155;font-weight:500}
+
+/* Buttons */
+.btn{
+    padding:12px 24px;
+    border-radius:30px;
+    border:none;
+    cursor:pointer;
+    font-weight:500;
+    transition:.4s;
+}
+.btn-primary{
+    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));
+    color:#fff;
+}
+.btn-primary:hover{
+    box-shadow:0 0 25px rgba(34,211,238,.6);
+    transform:translateY(-4px);
+}
+.btn-outline{
+    background:rgba(255,255,255,.7);
+    border:1px solid rgba(255,255,255,.6);
+}
+
+/* Hero */
+.hero{
+    padding:100px 8% 80px;
+    text-align:center;
+}
+.badge{
+    display:inline-block;
+    padding:8px 18px;
+    border-radius:30px;
+    background:linear-gradient(90deg,#cffafe,#f5d0fe);
+    color:#0891b2;
+    margin-bottom:25px;
+}
+.hero h1{
+    font-size:54px;
+    font-weight:700;
+}
+.gradient-text{
+    background:linear-gradient(90deg,var(--c1),var(--c2),var(--c3));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:hue 4s infinite linear;
+}
+@keyframes hue{to{filter:hue-rotate(360deg)}}
+
+.hero p{
+    max-width:650px;
+    margin:25px auto;
+    color:#475569;
+}
+.hero-buttons{display:flex;justify-content:center;gap:20px}
+
+/* Stats */
+.stats{
+    padding:60px 8%;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:30px;
+}
+.card{
+    padding:30px;
+    border-radius:22px;
+    background:rgba(255,255,255,.6);
+    backdrop-filter:blur(15px);
+    text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+    transition:.4s;
+}
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 25px 60px rgba(0,0,0,.15);
+}
+.card h2{
+    font-size:38px;
+    background:linear-gradient(90deg,var(--c1),var(--c2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* Sections */
+section h2{
+    font-size:40px;
+    text-align:center;
+}
+.subtext{
+    text-align:center;
+    color:#475569;
+    margin-bottom:50px;
+}
+
+/* Features */
+.features{
+    padding:80px 8%;
+}
+.feature-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:30px;
+}
+.feature{
+    padding:35px;
+    border-radius:24px;
+    background:linear-gradient(135deg,rgba(255,255,255,.7),rgba(255,255,255,.4));
+    backdrop-filter:blur(14px);
+    box-shadow:0 15px 40px rgba(0,0,0,.08);
+    transition:.4s;
+}
+.feature:hover{
+    transform:scale(1.05);
+}
+
+/* Hidden extra features */
+.extra{
+    display:none;
+    opacity:0;
+    transform:translateY(40px);
+    transition:.6s ease;
+}
+.extra.show{
+    display:block;
+    opacity:1;
+    transform:translateY(0);
+}
+
+/* Steps */
+.how{
+    padding:80px 8%;
+    text-align:center;
+}
+.steps{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:40px;
+}
+.step span{
+    display:inline-flex;
+    justify-content:center;
+    align-items:center;
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:linear-gradient(90deg,var(--c1),var(--c3));
+    color:#fff;
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+/* Footer */
+footer{
+    padding:30px 8%;
+    text-align:center;
+    color:#64748b;
+    background:rgba(255,255,255,.5);
+    backdrop-filter:blur(12px);
+}
+
+/* Scroll animation */
+.fade{opacity:0;transform:translateY(40px);transition:1s}
+.fade.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+    .hero h1{font-size:40px}
+}
+</style>
+</head>
+<body>
+
+<div class="blob one"></div>
+<div class="blob two"></div>
+<div class="blob three"></div>
+
+<header>
+    <div class="logo"><span>🧠</span> TumorAI</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="#" id="featuresBtn">Features</a>
+        <a href="#">How It Works</a>
+        <a href="#">About</a>
+        <a href="/detect" class="btn btn-primary">Get Started</a>
+    </nav>
+</header>
+
+<section class="hero fade">
+    <div class="badge">✨ AI-Powered Brain Tumor Detection</div>
+    <h1>Detect Tumors<br><span class="gradient-text">with AI Precision</span></h1>
+    <p>Upload MRI scans and receive instant, accurate tumor detection powered by advanced machine learning.</p>
+    <div class="hero-buttons">
+        <a href="/detect" class="btn btn-primary">Start Detection →</a>
+        <button class="btn btn-outline">❤️ Learn More</button>
+    </div>
+</section>
+
+<section class="stats fade">
+    <div class="card"><h2>99.5%</h2><p>Accuracy Rate</p></div>
+    <div class="card"><h2>50K+</h2><p>Scans Analyzed</p></div>
+    <div class="card"><h2>500+</h2><p>Hospitals Trust Us</p></div>
+    <div class="card"><h2>&lt;2s</h2><p>Analysis Time</p></div>
+</section>
+
+<section class="features fade">
+    <h2>Why Choose <span class="gradient-text">TumorAI</span>?</h2>
+    <p class="subtext">State-of-the-art technology meets medical expertise</p>
+
+    <div class="feature-grid">
+        <div class="feature">⚡ <b>Instant MRI Analysis</b><p>Results in seconds.</p></div>
+        <div class="feature">🛡 <b>High Accuracy Detection</b><p>Deep learning based tumor identification.</p></div>
+        <div class="feature">🧪 <b>Multi-Class Classification</b><p>Detects Glioma, Meningioma & Pituitary tumors.</p></div>
+        <div class="feature">🟥 <b>MRI Image Annotation</b><p>Automatically highlights tumor region.</p></div>
+        <div class="feature">🤖 <b>Chatbot & Voice Support</b><p>Interactive AI explanations.</p></div>
+
+        <div class="feature">📊 <b>Detailed Reports</b><p>Professional medical report generation.</p></div>
+        
+
+        <div class="feature extra">🔐 <b>Secure Upload</b><p>Encrypted MRI data protection.</p></div>
+        
+    
+        <div class="feature extra">📱 <b>Multi-Device</b><p>Works on all screen sizes.</p></div>
+    </div>
+
+    <button class="btn btn-primary" id="toggleFeatures" style="margin-top:40px">
+        ➕ Show More Features
+    </button>
+</section>
+
+<section class="how fade">
+    <h2>How It <span class="gradient-text">Works</span></h2>
+    <div class="steps">
+        <div class="step"><span>01</span><h3>Upload MRI</h3></div>
+        <div class="step"><span>02</span><h3>AI Analysis</h3></div>
+        <div class="step"><span>03</span><h3>Get Results</h3></div>
+    </div>
+    <br><br>
+    <a href="/detect" class="btn btn-primary">✨ Try It Now →</a>
+</section>
+
+<footer>
+    © 2024 TumorAI. For research and educational purposes only.
+</footer>
+
+<script>
+/* Scroll animation */
+const observer=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+        if(e.isIntersecting){e.target.classList.add("show")}
+    })
+},{threshold:.2});
+document.querySelectorAll(".fade").forEach(el=>observer.observe(el));
+
+/* Features toggle */
+const featuresBtn = document.getElementById("featuresBtn");
+const toggleBtn = document.getElementById("toggleFeatures");
+const extras = document.querySelectorAll(".extra");
+const featureSection = document.querySelector(".features");
+
+let expanded=false;
+
+featuresBtn.addEventListener("click",e=>{
+    e.preventDefault();
+    featureSection.scrollIntoView({behavior:"smooth"});
+    if(!expanded) toggleFeatures();
+});
+
+toggleBtn.addEventListener("click",toggleFeatures);
+
+function toggleFeatures(){
+    expanded=!expanded;
+    extras.forEach((card,i)=>{
+        setTimeout(()=>card.classList.toggle("show"),i*120);
+    });
+    toggleBtn.innerHTML = expanded
+        ? "➖ Show Less Features"
+        : "➕ Show More Features";
+}
+</script>
+
+</body>
+</html>
