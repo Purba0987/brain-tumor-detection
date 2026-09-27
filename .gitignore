@@ -1,22 +1,43 @@
-# Python cache
+# Environment & Secrets
+.env
+.env.local
+*.env
+
+# Python cache & compiled files
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+.pytest_cache/
 
 # Virtual environment
 venv/
+ENV/
+env/
 
-# Uploaded MRI images (user data)
+# Data & Upload buffers
 uploads/
+static/uploads/
+static/annotated/
+static/heatmaps/
 
-# Trained model files (large size)
-*.h5
+# Large Model Weights (Upload to cloud storage or track via Git LFS if needed)
+models/*.h5
 
-# Zip files
+# Zip files & Binaries
 *.zip
+ffmpeg/
 
-# VS Code settings
+# Local Database & Instance files
+*.db
+instance/
+scratch/
+
+# IDE & OS files
 .vscode/
-
-# System files
+.idea/
 .DS_Store
 Thumbs.db
+
+# Deployment / Temporary Logs
+*.log

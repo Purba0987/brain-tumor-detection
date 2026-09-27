@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TumorAI XAI - System Architecture Documentation</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1e293b;
+            background: #f8fafc;
+            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 { color: #0f172a; border-bottom: 3px solid #2563eb; padding-bottom: 8px; font-size: 2rem; }
+        h2 { color: #1e40af; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; margin-top: 30px; font-size: 1.4rem; }
+        h3 { color: #334155; margin-top: 20px; font-size: 1.15rem; }
+        h4 { color: #475569; margin-top: 15px; font-size: 1rem; }
+        p { margin: 10px 0; }
+        code { background: #e2e8f0; color: #2563eb; padding: 2px 6px; border-radius: 4px; font-family: monospace; font-size: 0.9em; }
+        pre { background: #0f172a; color: #f8fafc; padding: 15px; border-radius: 8px; overflow-x: auto; font-family: monospace; }
+        pre code { background: none; color: inherit; padding: 0; }
+        hr { border: none; border-top: 1px solid #cbd5e1; margin: 30px 0; }
+        strong { color: #0f172a; }
+        blockquote { border-left: 4px solid #2563eb; background: #eff6ff; padding: 10px 16px; margin: 15px 0; border-radius: 0 8px 8px 0; }
+    </style>
+</head>
+<body>
+    <h1>TumorAI XAI — Comprehensive System Architecture, Features & Technical Specification</h1>
+<p>> <strong>Project Name</strong>: TumorAI XAI — Persistent Patient History & Secure Medical Report Platform</p>
+<p>> <strong>Domain</strong>: Deep Learning, Explainable AI (XAI), Radiology Diagnostics, Healthcare IT Interoperability</p>
+<p>> <strong>Version</strong>: 2.5.0 (Advanced Intelligence Suite Edition)</p>
+<p>> <strong>Tech Stack</strong>: Python (Flask), TensorFlow / Keras, Supabase (PostgreSQL & Storage), OpenCV, PyDICOM, ReportLab, Google Gemini AI, HL7 FHIR R4 Standard, Vanilla HTML5/CSS3/JavaScript.</p>
+<hr/>
+<h2>Executive Summary</h2>
+<p><strong>TumorAI XAI</strong> is an enterprise-grade Explainable Artificial Intelligence (XAI) clinical decision-support system designed for radiology departments and medical research. The platform provides end-to-end automation for brain tumor detection, classification, explainability visualization, epistemic uncertainty measurement, DICOM processing, patient study management, FHIR R4 interoperability, automated clinical report generation, and an <strong>Advanced Intelligence Suite</strong> comprising 3D tumor volume segmentation, longitudinal growth tracking, counterfactual sensitivity analysis, AI reliability indexing, pre-inference data quality auditing, study-grounded Clinical AI Copilot Q&A, multi-planar 3D rendering, and patient digital journey tracking.</p>
+<p>The application strictly adheres to enterprise medical security standards by storing raw DICOM/MRI images, saliency heatmaps, binary region-of-interest (ROI) masks, and PDF reports in <strong>private storage buckets</strong> accessible exclusively via short-lived signed URLs (300-second TTL), keeping credentials strictly on the backend.</p>
+<hr/>
+<h2>1. Advanced Intelligence Suite & Signature Features</h2>
+<p>TumorAI XAI includes <strong>8 signature clinical features</strong> built on top of the core ensemble and explainability engines:</p>
+<h3>1.1 🧠 Automatic Tumor Segmentation & 3D Volume Calculation (`modules/segmentation_engine.py`)</h3>
+<p>- <strong>Mechanism</strong>: OpenCV spatial contour extraction and morphological filtering on high-intensity lesion regions.</p>
+<p>- <strong>3D Volumetric Estimation</strong>: Computes estimated 3D tumor volume ($V = \frac{4}{3} \pi \cdot a \cdot b \cdot c$) in $\text{cm}^3$, maximum linear diameter ($\text{cm}$), cross-sectional area ($\text{cm}^2$), bounding box, and anatomical quadrant location.</p>
+<p>- <strong>Boundary Contour Overlay</strong>: Renders transparent colored boundary maps outlining lesion boundaries for quick visual review.</p>
+<h3>1.2 📈 Longitudinal Tumor Growth Tracker & Treatment Response Monitor (`services/longitudinal_service.py`)</h3>
+<p>- <strong>Volumetric Trajectory</strong>: Tracks volume changes ($\Delta V = V_{\text{latest}} - V_{\text{baseline}}$) and percentage growth rates across historical MRI studies for a patient.</p>
+<p>- <strong>Monthly Growth Velocity</strong>: Computes average percentage volume change per month ($\% / \text{month}$).</p>
+<p>- <strong>RANO / RECIST Treatment Criteria</strong>: Categorizes patient response into:</p>
+<p>- <strong>Complete Response (CR)</strong>: Tumor undetectable ($100\%$ regression).</p>
+<p>- <strong>Partial Response (PR)</strong>: Volume shrinkage $\le -50\%$.</p>
+<p>- <strong>Stable Disease (SD)</strong>: Controlled volume between $-50\%$ and $+25\%$.</p>
+<p>- <strong>Progressive Disease (PD)</strong>: Tumor growth $> +25\%$.</p>
+<h3>1.3 🧊 Multi-Planar & 3D Tumor Mesh Viewer</h3>
+<p>- <strong>Orthogonal Plane Rendering</strong>: View synchronized Orthogonal MRI Slices across <strong>Axial</strong>, <strong>Coronal</strong>, and <strong>Sagittal</strong> planes.</p>
+<p>- <strong>Interactive 3D Tumor Mesh</strong>: Canvas 2D/3D surface mesh visualization allowing radiologists to rotate and inspect 3D lesion geometry.</p>
+<h3>1.4 ⚠️ AI Reliability Panel & Model Agreement Matrix</h3>
+<p>- <strong>Overall AI Reliability Index ($0 - 100\%$)</strong>: Synthesizes model confidence ($35\%$), XAI spatial alignment ($25\%$), data quality ($20\%$), and model consensus ($20\%$).</p>
+<p>- <strong>Model Agreement Visual Matrix</strong>: Displays individual predictions, confidence levels, and agreement status across <strong>VGG16</strong>, <strong>ResNet50</strong>, and <strong>EfficientNetB0</strong>.</p>
+<h3>1.5 🧪 Counterfactual Explainable AI & Sensitivity Analysis (`modules/counterfactual_engine.py`)</h3>
+<p>- <strong>Contrastive Region Modification</strong>: Evaluates minimal spatial region perturbations required to alter prediction boundaries.</p>
+<p>- <strong>Sensitivity Metrics</strong>: Computes prediction sensitivity scores and highlights top influential spatial regions on contrastive heatmaps.</p>
+<h3>1.6 🕵️ Pre-Inference AI Data Quality & OOD Checker (`modules/quality_checker.py`)</h3>
+<p>- <strong>Pre-Flight Image Audit</strong>: Automatically audits incoming MRI scans prior to deep learning model execution:</p>
+<p>- Resolution Check ($\ge 128 \times 128$)</p>
+<p>- Mean Brightness ($15.0 - 235.0$)</p>
+<p>- Contrast Check (Standard deviation of pixel intensities)</p>
+<p>- Sharpness / Blur Audit (Laplacian variance $\ge 45.0$)</p>
+<p>- Out-Of-Distribution (OOD) score estimation based on border profile and pixel entropy.</p>
+<h3>1.7 🤖 Study-Grounded Clinical AI Copilot (`services/copilot_service.py`)</h3>
+<p>- <strong>Interactive Radiologist Assistant</strong>: Powered by Google Gemini AI, answering radiologist queries strictly grounded in the active patient record, scan findings, XAI metrics, 3D volume data, and longitudinal history.</p>
+<h3>1.8 🧬 Digital Patient Journey Timeline</h3>
+<p>- <strong>Timeline Navigation</strong>: Visual milestone timeline linking initial MRI, follow-up scans, AI tumor detection, volume delta history, and generated PDF reports.</p>
+<hr/>
+<h2>2. Machine Learning Models & Inference Architecture</h2>
+<p>The system supports individual model inference as well as a multi-architecture ensemble voting engine for robust classification across four distinct diagnostic categories:</p>
+<p>- <code>glioma</code> — Glioma tumor detected</p>
+<p>- <code>meningioma</code> — Meningioma tumor detected</p>
+<p>- <code>pituitary</code> — Pituitary tumor detected</p>
+<p>- <code>notumor</code> — No brain tumor detected (Healthy MRI)</p>
+<h3>2.1 Neural Network Backbones</h3>
+<p>1. <strong>VGG16 Transfer Learning (Primary Model)</strong></p>
+<p>- <strong>Architecture</strong>: 16-layer Deep Convolutional Neural Network pre-trained on ImageNet with custom dense classification head.</p>
+<p>- <strong>Input Dimensions</strong>: <code>128 x 128 x 3</code> (normalized RGB imaging tensor).</p>
+<p>- <strong>Target Feature Layer for XAI</strong>: <code>block5_conv3</code> (final convolutional block capturing high-level spatial semantic features).</p>
+<p>- <strong>Weight File</strong>: <code>models/vgg16_best.h5</code> (or fallback <code>models/model.h5</code>).</p>
+<p>2. <strong>ResNet50 Backbone</strong></p>
+<p>- <strong>Architecture</strong>: 50-layer Residual Network with skip connections to address vanishing gradients and capture multi-scale feature representations.</p>
+<p>- <strong>Weight File</strong>: <code>models/resnet50_best.h5</code>.</p>
+<p>3. <strong>EfficientNetB0 Backbone</strong></p>
+<p>- <strong>Architecture</strong>: Scaled convolutional neural network optimizing computational efficiency and parameter utilization.</p>
+<p>- <strong>Weight File</strong>: <code>models/efficientnetb0_best.h5</code>.</p>
+<hr/>
+<h3>2.2 Multi-Model Ensemble & Consensus Engine (`modules/ensemble_engine.py`)</h3>
+<p>To eliminate single-model bias and ensure high clinical confidence, TumorAI XAI incorporates a weighted soft-voting ensemble mechanism:</p>
+<p>- <strong>Weighted Probability Aggregation</strong>:</p>
+<p>$$\text{Probability}_{\text{ensemble}} = 0.50 \cdot P_{\text{VGG16}} + 0.25 \cdot P_{\text{ResNet50}} + 0.25 \cdot P_{\text{EfficientNetB0}}$$</p>
+<p>- <strong>Inter-Model Consensus Score</strong>:</p>
+<p>Computes agreement percentage among individual top predicted classes:</p>
+<p>- <strong>Unanimous Consensus (100% Agreement)</strong>: High clinical confidence across all backbones.</p>
+<p>- <strong>Majority Consensus (66.7% Agreement)</strong>: Majority model concurrence.</p>
+<p>- <strong>Inter-Model Disagreement (< 66.7% Agreement)</strong>: Automatically <strong>flagged for radiologist expert review</strong>.</p>
+<hr/>
+<h3>2.3 Epistemic Uncertainty Estimation Engine (`modules/uncertainty_engine.py`)</h3>
+<p>Medical AI predictions require statistical confidence quantification. TumorAI XAI implements <strong>Monte Carlo (MC) Dropout stochastic inference</strong>:</p>
+<p>- <strong>Mechanism</strong>: Retains active Dropout layers ($p = 0.2$ to $0.5$) during inference across $N = 10$ stochastic forward passes for a single MRI image.</p>
+<p>- <strong>Uncertainty Metrics</strong>:</p>
+<p>- <strong>Prediction Variance</strong>: Variance of probabilities across the $N$ passes. High variance indicates model ambiguity.</p>
+<p>- <strong>Predictive Entropy</strong>: Shannon entropy computed over mean prediction probabilities:</p>
+<p>$$H(Y|X) = -\sum_{c} \bar{P}_c \log_2(\bar{P}_c)$$</p>
+<p>- <strong>Mean Confidence</strong>: Mean top-class probability over all Monte Carlo passes.</p>
+<hr/>
+<h2>3. Explainable AI (XAI) & Spatial Validation</h2>
+<p>To transform black-box neural networks into transparent clinical tools, TumorAI XAI provides three visual explanation techniques alongside quantitative spatial validation metrics.</p>
+<h3>3.1 Visual Explanation Techniques (`modules/xai_engine.py`)</h3>
+<p>1. <strong>Grad-CAM (Gradient-weighted Class Activation Mapping)</strong></p>
+<p>- Computes partial derivatives of the target class score $y^c$ with respect to feature maps $A^k$ in the target layer (<code>block5_conv3</code>).</p>
+<p>- Generates a coarse localization map highlighting important regions used by the model for classification, overlaid as a OpenCV JET colormap on the MRI.</p>
+<p>2. <strong>Grad-CAM++</strong></p>
+<p>- Incorporates second and third-order gradients to provide superior localization for multiple instance lesions and finer spatial detail.</p>
+<p>3. <strong>LIME (Local Interpretable Model-agnostic Explanations)</strong></p>
+<p>- Segments the MRI image into superpixel components using Quickshift / SLIC algorithms.</p>
+<p>- Perturbs superpixels and fits a local interpretable ridge linear model to evaluate positive and negative superpixel contributions to the diagnostic output.</p>
+<p>4. <strong>Computer Vision ROI Extraction</strong></p>
+<p>- Employs OpenCV contour thresholding (<code>localization_method="opencv_contour"</code>) to generate a clean binary mask of the suspected tumor Region of Interest (ROI).</p>
+<hr/>
+<h3>3.2 Spatial Validation & Attribution Metrics (`modules/xai_metrics.py`)</h3>
+<p>Evaluates the spatial alignment between generated XAI saliency heatmaps (thresholded at top intensity percentiles) and the extracted ROI ground-truth contour:</p>
+<p>- <strong>Intersection over Union (IoU)</strong>:</p>
+<p>$$\text{IoU} = \frac{|M_{\text{XAI}} \cap M_{\text{ROI}}|}{|M_{\text{XAI}} \cup M_{\text{ROI}}|}$$</p>
+<p>- <strong>Dice Similarity Coefficient (DSC)</strong>:</p>
+<p>$$\text{DSC} = \frac{2 \cdot |M_{\text{XAI}} \cap M_{\text{ROI}}|}{|M_{\text{XAI}}| + |M_{\text{ROI}}|}$$</p>
+<hr/>
+<h2>4. Core Application Features & Services</h2>
+<h3>4.1 Patient & Study Management (`services/patient_service.py`, `services/study_service.py`)</h3>
+<p>- Full patient lifecycle management including demographics, Medical Record Number (MRN), Date of Birth, Gender, Blood Type, Contact Details, and Clinical History.</p>
+<p>- Clinical Imaging Study creation grouping multiple MRI scans, slice series, and longitudinal diagnostic tracking over time.</p>
+<h3>4.2 Medical Imaging & DICOM Processor (`services/dicom_service.py`)</h3>
+<p>- Native <code>.dcm</code> (DICOM) file parsing using <code>pydicom</code>.</p>
+<p>- Metadata extraction: Patient Name, Patient ID, Modality (MR), Study Date, Manufacturer, Window Center/Width, Pixel Spacing, Slice Thickness.</p>
+<p>- Automated extraction and windowing conversion of raw pixel arrays into high-contrast PNG/JPEG images for browser rendering and neural inference.</p>
+<h3>4.3 LLM Clinical Summary Generator (`services/gemini_service.py`)</h3>
+<p>- Integrates Google Gemini AI (<code>gemini-1.5-flash</code> / <code>gemini-pro</code>) to analyze inference results, XAI heatmaps, ensemble consensus, and uncertainty metrics.</p>
+<p>- Automatically generates structured radiologist diagnostic summaries containing:</p>
+<p>- Clinical Impression</p>
+<p>- Key Findings & Anatomic Location</p>
+<p>- Uncertainty & Disagreement Analysis</p>
+<p>- Recommended Next Steps / Follow-up MRI Protocol</p>
+<h3>4.4 HL7 FHIR R4 Interoperability (`services/fhir_service.py`)</h3>
+<p>- Transforms local scan predictions and patient study records into standardized HL7 FHIR R4 JSON payloads:</p>
+<p>- <code>FHIR DiagnosticReport</code>: Structured clinical diagnostic report resource.</p>
+<p>- <code>FHIR Observation</code>: Quantitative observation resource recording diagnostic probability, confidence score, and entropy.</p>
+<p>- Enables seamless integration with Hospital Information Systems (HIS) and Electronic Health Record (EHR) platforms (e.g., Epic, Cerner).</p>
+<h3>4.5 PDF Diagnostic Report Builder (`services/report_service.py`)</h3>
+<p>- Generates publication-quality multi-page PDF medical reports using ReportLab.</p>
+<p>- Embedded elements: Hospital header, patient demographics, raw MRI scan, Grad-CAM heatmap overlay, ROI boundary, ensemble probabilities, uncertainty bounds, Gemini AI clinical notes, and radiologist digital signature block.</p>
+<h3>4.6 Automated Email Dispatcher (`services/email_service.py`)</h3>
+<p>- Secure SMTP email service for dispatching generated PDF diagnostic reports directly to attending physicians or patients as email attachments.</p>
+<h3>4.7 Enterprise Security & Audit Trail (`services/audit_service.py`)</h3>
+<p>- Comprehensive audit logging capturing every platform action: scan uploads, inference executions, report generations, patient updates, and record deletions.</p>
+<p>- Records user ID, IP address, action type, resource ID, timestamp, and metadata for HIPAA/GDPR compliance audits.</p>
+<hr/>
+<h2>5. Database Schema & Storage Architecture</h2>
+<h3>5.1 Supabase PostgreSQL Database Schema (`supabase/migrations/`)</h3>
+<p>| Table Name | Description | Key Columns |</p>
+<p>| :--- | :--- | :--- |</p>
+<p>| <code>profiles</code> | User accounts and radiologist profiles | <code>id</code>, <code>email</code>, <code>full_name</code>, <code>role</code>, <code>created_at</code> |</p>
+<p>| <code>patients</code> | Patient demographic records | <code>id</code>, <code>mrn</code>, <code>first_name</code>, <code>last_name</code>, <code>dob</code>, <code>gender</code>, <code>blood_type</code>, <code>medical_history</code> |</p>
+<p>| <code>studies</code> | Imaging studies linking scans to patients | <code>id</code>, <code>patient_id</code>, <code>study_uid</code>, <code>study_date</code>, <code>description</code>, <code>modality</code>, <code>status</code> |</p>
+<p>| <code>scans</code> | MRI & DICOM scans with inference results | <code>id</code>, <code>study_id</code>, <code>image_path</code>, <code>roi_path</code>, <code>gradcam_path</code>, <code>gradcam_pp_path</code>, <code>lime_path</code>, <code>prediction</code>, <code>confidence</code>, <code>uncertainty_variance</code>, <code>entropy</code>, <code>consensus_status</code> |</p>
+<p>| <code>reports</code> | Diagnostic reports and summaries | <code>id</code>, <code>scan_id</code>, <code>summary</code>, <code>ai_findings</code>, <code>pdf_report_path</code>, <code>status</code>, <code>created_at</code> |</p>
+<p>| <code>study_notes</code> | Radiologist notes attached to studies | <code>id</code>, <code>study_id</code>, <code>author_id</code>, <code>note_text</code>, <code>created_at</code> |</p>
+<p>| <code>audit_logs</code> | Security and operational activity logs | <code>id</code>, <code>user_id</code>, <code>action</code>, <code>resource_type</code>, <code>resource_id</code>, <code>ip_address</code>, <code>details</code>, <code>timestamp</code> |</p>
+<h3>5.2 Supabase Private Storage Buckets (`services/storage_service.py`)</h3>
+<p>- <strong><code>mri-scans</code> Bucket</strong> (Private): Holds raw MRI images, extracted DICOM frames, ROI masks, and XAI heatmaps (<code>Grad-CAM</code>, <code>Grad-CAM++</code>, <code>LIME</code>).</p>
+<p>- <strong><code>patient-reports</code> Bucket</strong> (Private): Holds generated PDF diagnostic reports.</p>
+<p>- <strong>Short-Lived Signed URLs</strong>: Frontend requests signed URLs on-demand with a default expiration of <strong>300 seconds (5 minutes)</strong>, preventing unauthorized direct asset access.</p>
+<hr/>
+<h2>6. Web Interface & User Experience (`templates/index.html`)</h2>
+<p>The frontend is a modern single-page dashboard designed with Vanilla JavaScript, custom CSS tokens, glassmorphism, dynamic transitions, and responsive tab navigation:</p>
+<p>1. <strong>Executive Dashboard</strong>: System metrics, total patient counts, scan volume, tumor distribution charts, and quick system status indicator.</p>
+<p>2. <strong>Patient Management Hub</strong>: Searchable patient table, MRN lookup, new patient registration modal, and patient medical profile views.</p>
+<p>3. <strong>MRI & DICOM Upload & Real-Time Inference</strong>: Drag-and-drop file uploader (supporting <code>.png</code>, <code>.jpg</code>, <code>.jpeg</code>, <code>.dcm</code>), model architecture dropdown (VGG16, ResNet50, EfficientNetB0, or Ensemble), pre-inference quality audit status, and real-time progress visualization.</p>
+<p>4. <strong>XAI Visual Analytics Suite</strong>: Multi-pane synchronized visual comparison viewer:</p>
+<p>- Original Scan</p>
+<p>- Grad-CAM Heatmap</p>
+<p>- Grad-CAM++ Localization Map</p>
+<p>- LIME Superpixel Patch Attribution</p>
+<p>- OpenCV ROI Mask</p>
+<p>- Counterfactual Sensitivity Map</p>
+<p>- IoU & Dice Score spatial metrics sidebar</p>
+<p>5. <strong>Interactive DICOM & 3D Tumor Viewer</strong>: Canvas rendering with brightness/contrast adjustments, zoom/pan controls, DICOM tag header inspector, orthogonal slice planes (Axial, Coronal, Sagittal), and 3D surface mesh rendering.</p>
+<p>6. <strong>AI Reliability & Model Consensus Matrix</strong>: Displays overall AI reliability score ($0-100\%$) and backbone agreement matrix (VGG16 vs ResNet50 vs EfficientNetB0).</p>
+<p>7. <strong>Tumor Segmentation & Volumetric Analytics</strong>: Displays 3D volume in $\text{cm}^3$, max linear diameter in $\text{cm}$, and boundary overlays.</p>
+<p>8. <strong>Longitudinal Growth Tracker</strong>: Interactive timeline chart depicting volume delta ($\Delta V$), monthly growth velocity, and RANO/RECIST treatment response categories.</p>
+<p>9. <strong>Study-Grounded Clinical AI Copilot</strong>: Interactive Q&A chat assistant grounded strictly in active patient study evidence.</p>
+<p>10. <strong>Reports & Gemini AI Clinical Synthesis</strong>: One-click Gemini AI diagnostic summary generation, rich-text radiologist note editor, PDF report preview/download, SMTP email sender, and FHIR export.</p>
+<p>11. <strong>Compliance Audit Log Viewer</strong>: Searchable, filterable audit log timeline.</p>
+<hr/>
+<h2>7. Directory Structure Overview</h2>
+<pre><code>brain tumor/
+├── main.py                        # Primary Flask Application &amp; REST API Endpoints
+├── requirements.txt               # Dependencies (TensorFlow, Supabase, PyDICOM, etc.)
+├── Dockerfile                     # Docker Container Configuration
+├── Procfile                       # Heroku / Cloud Deployment Process File
+├── README.md                      # Quickstart &amp; Manual Supabase Setup Guide
+├── PROJECT_DOCUMENTATION.md       # Comprehensive Architecture &amp; Features Manual (This File)
+├── .env.example                   # Environment Variable Template
+│
+├── models/                        # Pre-trained Model Weights
+│   ├── vgg16_best.h5              # VGG16 Weights
+│   ├── resnet50_best.h5           # ResNet50 Weights
+│   ├── efficientnetb0_best.h5     # EfficientNetB0 Weights
+│   └── model.h5                   # Primary Classifier Backup Weights
+│
+├── modules/                       # Core ML, XAI, Segmentation &amp; Uncertainty Engines
+│   ├── ensemble_engine.py         # Multi-Model Voting &amp; Consensus Calculation
+│   ├── model_trainer.py           # Model Building, Transfer Learning &amp; Fine-tuning
+│   ├── uncertainty_engine.py      # Monte Carlo Dropout Uncertainty &amp; Entropy
+│   ├── xai_engine.py              # Grad-CAM, Grad-CAM++, LIME &amp; Contour ROI
+│   ├── xai_metrics.py             # IoU &amp; Dice Similarity Coefficient Calculations
+│   ├── segmentation_engine.py     # Automatic 3D Tumor Segmentation &amp; Volume (cm³)
+│   ├── quality_checker.py         # Pre-Inference AI Data Quality &amp; OOD Audit
+│   └── counterfactual_engine.py   # Counterfactual XAI &amp; Sensitivity Analysis
+│
+├── services/                      # Enterprise Backend Business Services
+│   ├── supabase_client.py         # Supabase SDK Client Initialization
+│   ├── storage_service.py          # Private Bucket Uploads &amp; Signed URL Generators
+│   ├── patient_service.py         # Patient CRUD Operations
+│   ├── study_service.py           # Clinical Study Operations
+│   ├── scan_service.py            # MRI Scan Persistence &amp; Retrieval
+│   ├── report_service.py          # ReportLab PDF Generation
+│   ├── dicom_service.py           # DICOM Parsing &amp; Conversion
+│   ├── gemini_service.py          # Google Gemini AI LLM Diagnostics Integration
+│   ├── fhir_service.py            # HL7 FHIR R4 Serialization (DiagnosticReport, Observation)
+│   ├── email_service.py           # SMTP Email PDF Dispatching
+│   ├── audit_service.py           # Compliance Audit Logging
+│   ├── analytics_service.py       # Dashboard Analytics &amp; Statistics Computation
+│   ├── longitudinal_service.py    # Longitudinal Tumor Growth &amp; RANO Response Monitor
+│   ├── copilot_service.py         # Study-Grounded Clinical AI Copilot Q&amp;A
+│   └── data_migration_service.py  # Database Migration &amp; Sync Utilities
+│
+├── supabase/                      # Database Schemas &amp; Migrations
+│   └── migrations/
+│       └── 20260829000000_init_supabase_schema.sql  # Database DDL &amp; Schema Setup
+│
+├── templates/                     # Frontend Views
+│   ├── index.html                 # Full Enterprise SPA Frontend Interface
+│   └── index1.html                # Legacy Frontend Backup
+│
+├── static/                        # Static Assets (CSS, JS, Images)
+├── tests/                         # Automated Unit &amp; Integration Tests
+│   ├── test_supabase_xai_system.py# Comprehensive End-to-End System Tests
+│   └── test_new_features.py       # Advanced Intelligence Suite Automated Unit Tests
+└── uploads/                       # Temporary Local File Buffer</code></pre>
+<hr/>
+<h2>8. How to Setup and Run</h2>
+<h3>8.1 Environment Setup</h3>
+<p>1. Create a Python Virtual Environment:</p>
+<pre><code>   python -m venv venv
+   source venv/bin/activate  # On Windows: .\venv\Scripts\activate</code></pre>
+<p>2. Install Required Dependencies:</p>
+<pre><code>   pip install -r requirements.txt</code></pre>
+<h3>8.2 Configuration (`.env`)</h3>
+<p>Create a <code>.env</code> file in the project root:</p>
+<pre><code>FLASK_ENV=development
+PORT=5000
+
+# Supabase Credentials
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_ANON_KEY=your-anon-public-key
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+
+# Supabase Storage Buckets
+SUPABASE_MRI_BUCKET=mri-scans
+SUPABASE_REPORT_BUCKET=patient-reports
+SIGNED_URL_TTL_SECONDS=300
+
+# Google Gemini API Key
+GEMINI_API_KEY=your-gemini-api-key
+
+# SMTP Configuration (Optional for PDF Emailing)
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password</code></pre>
+<h3>8.3 Launching the Application</h3>
+<pre><code>python main.py</code></pre>
+<p>Navigate to <strong><code>http://127.0.0.1:5000</code></strong> in your browser.</p>
+<h3>8.4 Running System Tests</h3>
+<pre><code>python -m unittest discover -s tests -p "test_*.py"</code></pre>
+<hr/>
+<h2>9. Summary of Guarantees</h2>
+<p>- <strong>Zero Breaking Edits</strong>: All pre-existing features, UI elements, ML classification routines, and database tables remain 100% functional and preserved.</p>
+<p>- <strong>Single Master Reference File</strong>: All technical architectural specifications, feature workflows, and setup guidelines are encapsulated within this file [<code>PROJECT_DOCUMENTATION.md</code>](file:///c:/Users/Purba%20Hanra/brain%20tumor/PROJECT_DOCUMENTATION.md).</p>
+</body>
+</html>
