@@ -1,9 +1,49 @@
 {
   "version": 2,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/api/:path*",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/api/:path*"
+    },
+    {
+      "source": "/detect",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/detect"
+    },
+    {
+      "source": "/batch-detect",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/batch-detect"
+    },
+    {
+      "source": "/chat",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/chat"
+    },
+    {
+      "source": "/history",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/history"
+    },
+    {
+      "source": "/login",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/login"
+    },
+    {
+      "source": "/register",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/register"
+    },
+    {
+      "source": "/logout",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/logout"
+    },
+    {
+      "source": "/forgot-password/:path*",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/forgot-password/:path*"
+    },
+    {
+      "source": "/speech-to-text",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/speech-to-text"
+    },
+    {
+      "source": "/static/uploads/:path*",
+      "destination": "https://brain-tumor-backend-slqf.onrender.com/static/uploads/:path*"
     }
   ]
 }
