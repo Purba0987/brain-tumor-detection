@@ -4,6 +4,21 @@
 <meta charset="UTF-8">
 <title>TumorAI XAI – Explainable Brain MRI Analysis & Longitudinal Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function() {
+    const RENDER_BACKEND_URL = "https://brain-tumor-backend-slqf.onrender.com";
+    if (window.location.origin !== RENDER_BACKEND_URL && !window.location.origin.includes("onrender.com")) {
+        const originalFetch = window.fetch;
+        window.fetch = function(input, init) {
+            if (typeof input === 'string' && input.startsWith('/') && !input.startsWith('//')) {
+                input = RENDER_BACKEND_URL + input;
+                if (init) { init.credentials = 'include'; } else { init = { credentials: 'include' }; }
+            }
+            return originalFetch(input, init);
+        };
+    }
+})();
+</script>
 
 <!-- Fonts & Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">

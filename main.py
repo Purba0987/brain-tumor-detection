@@ -91,8 +91,11 @@ def wrap_text(text, width, font_name="Helvetica", font_size=12, canvas=None):
         lines.append(current_line)
     return lines
 
+from flask_cors import CORS
+
 # Initialize Flask app
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.jinja_env.auto_reload = True
 app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key_here_2026')
