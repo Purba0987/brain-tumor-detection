@@ -4,6 +4,25 @@
 <meta charset="UTF-8">
 <title>TumorAI XAI – Explainable Brain MRI Analysis & Longitudinal Intelligence</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function() {
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '0.0.0.0';
+    const RENDER_BACKEND_URL = "https://brain-tumor-backend-slqf.onrender.com";
+    const originalFetch = window.fetch;
+    window.fetch = function(input, init) {
+        init = init || {};
+        if (init.credentials === undefined) {
+            init.credentials = 'include';
+        }
+        if (!isLocal && window.location.origin !== RENDER_BACKEND_URL && !window.location.origin.includes("onrender.com")) {
+            if (typeof input === 'string' && input.startsWith('/') && !input.startsWith('//')) {
+                input = RENDER_BACKEND_URL + input;
+            }
+        }
+        return originalFetch(input, init);
+    };
+})();
+</script>
 
 <!-- Fonts & Icons -->
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -3957,6 +3976,7 @@ function showAuthToast(msg) {
 
 // Auth Modal Functions
 function openAuthModal(mode) {
+    if (mode) switchAuthView(mode);
     document.getElementById('authModal').style.display = 'flex';
 }
 function closeAuthModal() {

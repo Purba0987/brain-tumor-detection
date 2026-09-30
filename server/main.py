@@ -91,14 +91,33 @@ def wrap_text(text, width, font_name="Helvetica", font_size=12, canvas=None):
         lines.append(current_line)
     return lines
 
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_cors import CORS
 
 # Initialize Flask app
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1, x_prefix=1)
+
 CORS(app, supports_credentials=True)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.jinja_env.auto_reload = True
-app.secret_key = os.environ.get('SECRET_KEY', 'your_secret_key_here_2026')
+app.secret_key = os.environ.get('SECRET_KEY', 'tumorai_super_secret_key_2026')
+
+# Production & Reverse Proxy Auth Cookie Settings
+is_production = bool(os.environ.get('RENDER') or os.environ.get('PORT') or os.environ.get('DATABASE_URL'))
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['REMEMBER_COOKIE_HTTPONLY'] = True
+
+if is_production:
+    app.config['SESSION_COOKIE_SAMESITE'] = 'None'
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['REMEMBER_COOKIE_SAMESITE'] = 'None'
+    app.config['REMEMBER_COOKIE_SECURE'] = True
+else:
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+    app.config['SESSION_COOKIE_SECURE'] = False
+    app.config['REMEMBER_COOKIE_SAMESITE'] = 'Lax'
+    app.config['REMEMBER_COOKIE_SECURE'] = False
 
 # Database Setup
 database_url = os.environ.get('DATABASE_URL')
@@ -380,6 +399,7 @@ def register():
     user.set_password(password)
     db.session.add(user)
     db.session.commit()
+    session.permanent = True
     login_user(user, remember=True)
 
     AuditService.log_event("user_registered", "users", user.id, actor_id=user.id)
@@ -407,6 +427,7 @@ def login():
         AuditService.log_event("authorization_failed", "users", metadata={"attempted_username": identifier})
         return jsonify({'error': 'Invalid username/email or password.'}), 401
 
+    session.permanent = True
     login_user(user, remember=True)
     AuditService.log_event("user_logged_in", "users", user.id, actor_id=user.id)
     return jsonify({
