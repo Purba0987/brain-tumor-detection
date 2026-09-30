@@ -1191,10 +1191,40 @@
                 const res = await fetch('/api/user', { credentials: 'include' });
                 const data = await res.json();
                 if (data.is_authenticated && data.user) {
-                    window.location.href = '/dashboard';
+                    // User is already logged in — update nav buttons to show "Go to Dashboard"
+                    // Do NOT auto-redirect; always show the landing page first
+                    const navActions = document.querySelector('.nav-actions');
+                    if (navActions) {
+                        navActions.innerHTML = `
+                            <a href="/dashboard" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span>Go to Dashboard</span>
+                            </a>
+                            <button class="btn-secondary" onclick="logoutFromLanding()">Sign Out</button>
+                        `;
+                    }
+                    const heroButtons = document.querySelector('.hero-buttons');
+                    if (heroButtons) {
+                        heroButtons.innerHTML = `
+                            <a href="/dashboard" class="btn-primary" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+                                <i class="fa-solid fa-gauge-high"></i>
+                                <span>Go to Dashboard</span>
+                            </a>
+                            <button class="btn-secondary" onclick="logoutFromLanding()">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                                <span>Sign Out</span>
+                            </button>
+                        `;
+                    }
                 }
             } catch (e) {}
         }
+
+        async function logoutFromLanding() {
+            try { await fetch('/logout', { credentials: 'include' }); } catch (e) {}
+            window.location.reload();
+        }
+
         document.addEventListener('DOMContentLoaded', checkAuthOnLanding);
 
         // Modal Control Functions
