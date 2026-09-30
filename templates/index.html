@@ -9,7 +9,7 @@
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname === '0.0.0.0';
     const RENDER_BACKEND_URL = "https://brain-tumor-backend-slqf.onrender.com";
     const originalFetch = window.fetch;
-    window.fetch = function(input, init) {
+    window.fetch = async function(input, init) {
         init = init || {};
         if (init.credentials === undefined) {
             init.credentials = 'include';
@@ -19,7 +19,27 @@
                 input = RENDER_BACKEND_URL + input;
             }
         }
-        return originalFetch(input, init);
+        try {
+            const response = await originalFetch(input, init);
+            const originalJson = response.json.bind(response);
+            response.json = async function() {
+                try {
+                    return await originalJson();
+                } catch (err) {
+                    console.warn(`[API Warning] Could not parse JSON from ${input}:`, err);
+                    return { is_authenticated: false, error: 'Server temporarily unavailable or waking up' };
+                }
+            };
+            return response;
+        } catch (netErr) {
+            console.warn(`[Network Warning] Fetch failed for ${input}:`, netErr);
+            return {
+                ok: false,
+                status: 503,
+                json: async () => ({ is_authenticated: false, error: 'Network error or server sleeping' }),
+                text: async () => 'Network error'
+            };
+        }
     };
 })();
 </script>
