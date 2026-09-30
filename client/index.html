@@ -4191,7 +4191,7 @@ async function checkUserAuth() {
             if (ddRole) ddRole.textContent = role;
         } else {
             currentUserLoggedIn = false;
-            window.location.href = '/landing?logout=1';
+            window.location.replace('/landing');
         }
     } catch (err) {
         console.error("Auth status check failed:", err);
@@ -4211,11 +4211,12 @@ document.addEventListener('click', function() {
 });
 
 async function logoutUser() {
-    try {
-        await fetch('/logout', { credentials: 'include' });
-    } catch (e) {}
+    // Fire-and-forget: do NOT await – Render free tier can sleep/hang,
+    // which would block the redirect indefinitely
+    try { fetch('/logout', { credentials: 'include' }); } catch (e) {}
     currentUserLoggedIn = false;
-    window.location.href = '/landing?logout=1';
+    // replace() prevents "Back" button returning to dashboard after sign-out
+    window.location.replace('/landing');
 }
 
 // Single Upload Handler
