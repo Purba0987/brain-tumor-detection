@@ -46,8 +46,20 @@
       "destination": "https://brain-tumor-backend-slqf.onrender.com/static/uploads/:path*"
     },
     {
-      "source": "/(.*)",
+      "source": "/landing",
+      "destination": "/client/landing.html"
+    },
+    {
+      "source": "/dashboard",
       "destination": "/client/index.html"
+    },
+    {
+      "source": "/",
+      "destination": "/client/landing.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/client/landing.html"
     }
   ]
 }

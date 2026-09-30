@@ -4140,15 +4140,15 @@ async function handleAuthSubmit(e) {
 
 async function checkUserAuth() {
     try {
-        const res = await fetch('/api/user');
+        const res = await fetch('/api/user', { credentials: 'include' });
         const data = await res.json();
         const area = document.getElementById('authNavArea');
-        if (area) {
-            if (data.is_authenticated && data.user) {
-                currentUserLoggedIn = true;
-                const uname = data.user.username || data.user.email || 'User Account';
-                const initials = uname.substring(0, 2).toUpperCase();
-                const role = data.user.role ? data.user.role.toUpperCase() : 'RADIOLOGY TEAM';
+        if (data.is_authenticated && data.user) {
+            currentUserLoggedIn = true;
+            const uname = data.user.username || data.user.email || 'User Account';
+            const initials = uname.substring(0, 2).toUpperCase();
+            const role = data.user.role ? data.user.role.toUpperCase() : 'RADIOLOGY TEAM';
+            if (area) {
                 area.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div class="avatar-initials" style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center;">${initials}</div>
@@ -4161,12 +4161,17 @@ async function checkUserAuth() {
                         </button>
                     </div>
                 `;
-            } else {
-                currentUserLoggedIn = false;
+            }
+        } else {
+            currentUserLoggedIn = false;
+            if (area) {
                 area.innerHTML = `
                     <button class="btn btn-outline btn-sm" onclick="openAuthModal('login')"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
                     <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')" style="margin-left: 6px;"><i class="fa-solid fa-user-plus"></i> Register</button>
                 `;
+            }
+            if (window.location.pathname.includes('/dashboard') || window.location.pathname === '/dashboard') {
+                window.location.href = '/landing';
             }
         }
     } catch (err) {
@@ -4175,10 +4180,11 @@ async function checkUserAuth() {
 }
 
 async function logoutUser() {
-    await fetch('/logout');
+    try {
+        await fetch('/logout', { credentials: 'include' });
+    } catch (e) {}
     currentUserLoggedIn = false;
-    checkUserAuth();
-    switchTab('home');
+    window.location.href = '/landing';
 }
 
 // Single Upload Handler

@@ -1166,6 +1166,17 @@
 
     <!-- JavaScript Logic -->
     <script>
+        async function checkAuthOnLanding() {
+            try {
+                const res = await fetch('/api/user', { credentials: 'include' });
+                const data = await res.json();
+                if (data.is_authenticated && data.user) {
+                    window.location.href = '/dashboard';
+                }
+            } catch (e) {}
+        }
+        document.addEventListener('DOMContentLoaded', checkAuthOnLanding);
+
         // Modal Control Functions
         function openAuthModal(tabName = 'login') {
             document.getElementById('auth-modal-overlay').classList.add('active');
