@@ -439,7 +439,24 @@ def login():
 @app.route('/logout', methods=['GET', 'POST'])
 def logout():
     logout_user()
-    return jsonify({'message': 'Logged out successfully'})
+    session.clear()
+    resp = jsonify({'message': 'Logged out successfully', 'redirect': '/landing'})
+    # Explicitly expire the session cookie so browsers remove it immediately
+    cookie_name = app.config.get('SESSION_COOKIE_NAME', 'session')
+    is_prod = bool(os.environ.get('RENDER') or os.environ.get('PORT') or os.environ.get('DATABASE_URL'))
+    resp.delete_cookie(
+        cookie_name,
+        path='/',
+        samesite='None' if is_prod else 'Lax',
+        secure=is_prod
+    )
+    resp.delete_cookie(
+        'remember_token',
+        path='/',
+        samesite='None' if is_prod else 'Lax',
+        secure=is_prod
+    )
+    return resp
 
 @app.route('/api/user', methods=['GET'])
 def user_info():
