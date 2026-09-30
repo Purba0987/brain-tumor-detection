@@ -2228,6 +2228,7 @@ svg circle {
             <li><a href="#" class="sidebar-nav-item" id="nav-item-patients" onclick="switchAppTab('patients')"><i class="fa-solid fa-clock-rotate-left"></i> Patient History</a></li>
             <li><a href="#" class="sidebar-nav-item" id="nav-item-chat" onclick="scrollToChatbot()"><i class="fa-regular fa-comments"></i> Chat / Voice</a></li>
             <li><a href="#" class="sidebar-nav-item" id="nav-item-settings" onclick="openAuditTrailModal()"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li><a href="#" class="sidebar-nav-item" style="color: #ef4444; font-weight: 700;" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a></li>
         </ul>
 
         <div class="sidebar-footer-widget">
@@ -2282,12 +2283,23 @@ svg circle {
                     </div>
                 </div>
 
-                <div class="user-profile-capsule" id="authNavArea">
-                    <div class="avatar-initials">PH</div>
-                    <div class="user-info-text">
-                        <strong class="user-name">Purba Hanra</strong>
+                <div class="user-profile-wrapper" style="position: relative;">
+                    <div class="user-profile-capsule" id="authNavArea" onclick="toggleUserDropdown(event)" style="cursor: pointer;">
+                        <div class="avatar-initials" id="capsuleInitials">PH</div>
+                        <div class="user-info-text">
+                            <strong class="user-name" id="capsuleUname">Purba Hanra</strong>
+                        </div>
+                        <i class="fa-solid fa-chevron-down dropdown-icon"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                    <div id="userProfileDropdown" style="display: none; position: absolute; right: 0; top: 115%; width: 220px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); padding: 8px; z-index: 99999;">
+                        <div style="padding: 8px 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 6px;">
+                            <strong style="display: block; font-size: 13px; color: var(--text-heading);" id="dropdownUname">Purba Hanra</strong>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;" id="dropdownRole">RADIOLOGY TEAM</span>
+                        </div>
+                        <button onclick="logoutUser()" style="width: 100%; text-align: left; padding: 10px 12px; background: transparent; border: none; color: #ef4444; font-size: 12.5px; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background='transparent'">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                        </button>
+                    </div>
                 </div>
             </div>
         </header>
@@ -4148,43 +4160,42 @@ async function checkUserAuth() {
             const uname = data.user.username || data.user.email || 'User Account';
             const initials = uname.substring(0, 2).toUpperCase();
             const role = data.user.role ? data.user.role.toUpperCase() : 'RADIOLOGY TEAM';
-            if (area) {
-                area.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <div class="avatar-initials" style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; font-weight: 800; font-size: 13px; display: flex; align-items: center; justify-content: center;">${initials}</div>
-                        <div class="user-info-text" style="line-height: 1.2;">
-                            <strong style="display: block; font-size: 13px; font-weight: 800; color: var(--text-heading);">${uname}</strong>
-                            <span style="font-size: 10.5px; color: var(--text-muted); font-weight: 600;">${role}</span>
-                        </div>
-                        <button onclick="logoutUser()" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 11px; margin-left: 6px; border-color: var(--border-color);" title="Sign Out">
-                            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
-                        </button>
-                    </div>
-                `;
-            }
+            const capInit = document.getElementById('capsuleInitials');
+            const capUname = document.getElementById('capsuleUname');
+            const ddUname = document.getElementById('dropdownUname');
+            const ddRole = document.getElementById('dropdownRole');
+
+            if (capInit) capInit.textContent = initials;
+            if (capUname) capUname.textContent = uname;
+            if (ddUname) ddUname.textContent = uname;
+            if (ddRole) ddRole.textContent = role;
         } else {
             currentUserLoggedIn = false;
-            if (area) {
-                area.innerHTML = `
-                    <button class="btn btn-outline btn-sm" onclick="openAuthModal('login')"><i class="fa-solid fa-right-to-bracket"></i> Sign In</button>
-                    <button class="btn btn-primary btn-sm" onclick="openAuthModal('register')" style="margin-left: 6px;"><i class="fa-solid fa-user-plus"></i> Register</button>
-                `;
-            }
-            if (window.location.pathname.includes('/dashboard') || window.location.pathname === '/dashboard') {
-                window.location.href = '/landing';
-            }
+            window.location.href = '/landing?logout=1';
         }
     } catch (err) {
         console.error("Auth status check failed:", err);
     }
 }
 
+function toggleUserDropdown(e) {
+    if (e) e.stopPropagation();
+    const dd = document.getElementById('userProfileDropdown');
+    if (dd) {
+        dd.style.display = (dd.style.display === 'block') ? 'none' : 'block';
+    }
+}
+document.addEventListener('click', function() {
+    const dd = document.getElementById('userProfileDropdown');
+    if (dd) dd.style.display = 'none';
+});
+
 async function logoutUser() {
     try {
         await fetch('/logout', { credentials: 'include' });
     } catch (e) {}
     currentUserLoggedIn = false;
-    window.location.href = '/landing';
+    window.location.href = '/landing?logout=1';
 }
 
 // Single Upload Handler

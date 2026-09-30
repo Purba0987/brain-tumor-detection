@@ -2228,6 +2228,7 @@ svg circle {
             <li><a href="#" class="sidebar-nav-item" id="nav-item-patients" onclick="switchAppTab('patients')"><i class="fa-solid fa-clock-rotate-left"></i> Patient History</a></li>
             <li><a href="#" class="sidebar-nav-item" id="nav-item-chat" onclick="scrollToChatbot()"><i class="fa-regular fa-comments"></i> Chat / Voice</a></li>
             <li><a href="#" class="sidebar-nav-item" id="nav-item-settings" onclick="openAuditTrailModal()"><i class="fa-solid fa-gear"></i> Settings</a></li>
+            <li><a href="#" class="sidebar-nav-item" style="color: #ef4444; font-weight: 700;" onclick="logoutUser()"><i class="fa-solid fa-right-from-bracket"></i> Sign Out</a></li>
         </ul>
 
         <div class="sidebar-footer-widget">
@@ -2282,12 +2283,23 @@ svg circle {
                     </div>
                 </div>
 
-                <div class="user-profile-capsule" id="authNavArea">
-                    <div class="avatar-initials">PH</div>
-                    <div class="user-info-text">
-                        <strong class="user-name">Purba Hanra</strong>
+                <div class="user-profile-wrapper" style="position: relative;">
+                    <div class="user-profile-capsule" id="authNavArea" onclick="toggleUserDropdown(event)" style="cursor: pointer;">
+                        <div class="avatar-initials" id="capsuleInitials">PH</div>
+                        <div class="user-info-text">
+                            <strong class="user-name" id="capsuleUname">Purba Hanra</strong>
+                        </div>
+                        <i class="fa-solid fa-chevron-down dropdown-icon"></i>
                     </div>
-                    <i class="fa-solid fa-chevron-down dropdown-icon"></i>
+                    <div id="userProfileDropdown" style="display: none; position: absolute; right: 0; top: 115%; width: 220px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.25); padding: 8px; z-index: 99999;">
+                        <div style="padding: 8px 12px; border-bottom: 1px solid var(--border-color); margin-bottom: 6px;">
+                            <strong style="display: block; font-size: 13px; color: var(--text-heading);" id="dropdownUname">Purba Hanra</strong>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;" id="dropdownRole">RADIOLOGY TEAM</span>
+                        </div>
+                        <button onclick="logoutUser()" style="width: 100%; text-align: left; padding: 10px 12px; background: transparent; border: none; color: #ef4444; font-size: 12.5px; font-weight: 700; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s;" onmouseover="this.style.background='rgba(239,68,68,0.1)'" onmouseout="this.style.background='transparent'">
+                            <i class="fa-solid fa-right-from-bracket"></i> Sign Out
+                        </button>
+                    </div>
                 </div>
             </div>
         </header>
